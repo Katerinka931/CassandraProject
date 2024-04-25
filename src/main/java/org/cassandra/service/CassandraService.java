@@ -1,6 +1,8 @@
-package org.cassandra;
+package org.cassandra.service;
 
 import com.datastax.oss.driver.api.core.PagingIterable;
+import org.cassandra.entities.Team;
+import org.cassandra.repository.CassandraRepository;
 
 public class CassandraService {
     private final CassandraRepository repository;

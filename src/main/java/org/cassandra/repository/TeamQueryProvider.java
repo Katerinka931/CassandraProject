@@ -1,4 +1,4 @@
-package org.cassandra;
+package org.cassandra.repository;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.PagingIterable;
@@ -7,6 +7,7 @@ import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.mapper.MapperContext;
 import com.datastax.oss.driver.api.mapper.entity.EntityHelper;
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import org.cassandra.entities.Team;
 
 public class TeamQueryProvider {
     private final CqlSession session;

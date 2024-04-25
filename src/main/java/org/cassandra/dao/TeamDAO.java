@@ -1,7 +1,9 @@
-package org.cassandra;
+package org.cassandra.dao;
 
 import com.datastax.oss.driver.api.core.PagingIterable;
 import com.datastax.oss.driver.api.mapper.annotations.*;
+import org.cassandra.entities.Team;
+import org.cassandra.repository.TeamQueryProvider;
 
 @Dao
 public interface TeamDAO {

@@ -1,4 +1,4 @@
-package org.cassandra;
+package org.cassandra.utils;
 
 
 import com.datastax.oss.driver.api.core.CqlSession;
