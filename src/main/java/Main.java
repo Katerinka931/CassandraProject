@@ -1,8 +1,12 @@
-package org.cassandra;
+import org.cassandra.service.CassandraService;
+import org.cassandra.utils.CassandraConnector;
 
 public class Main {
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        CassandraConnector connector = CassandraConnector.getInstance();
+        CassandraService service = new CassandraService(CassandraConnector.getSession());
+
     }
 }
 

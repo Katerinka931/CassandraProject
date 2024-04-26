@@ -1,37 +1,30 @@
 package org.cassandra.service;
 
-import com.datastax.oss.driver.api.core.PagingIterable;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Session;
 import org.cassandra.entities.Team;
 import org.cassandra.repository.CassandraRepository;
 
 public class CassandraService {
     private final CassandraRepository repository;
 
-    public CassandraService() {
-        this.repository = new CassandraRepository();
+    public CassandraService(Session session) {
+        this.repository = new CassandraRepository(session);
     }
 
-    void createTeam(Team team) {
+    public void createTeam(Team team) {
         repository.createTeam(team);
     }
 
-    Team getTeamById(int id) {
+    public ResultSet getTeamById(int id) {
         return repository.getTeamById(id);
     }
 
-    void updateTeam(Team team) {
+    public void updateTeam(Team team) {
         repository.updateTeam(team);
     }
 
-    void deleteTeam(Team team) {
+    public void deleteTeam(Team team) {
         repository.deleteTeam(team);
-    }
-
-    PagingIterable<Team> getTeamsByNameLike(String name) {
-        return repository.getTeamsByNameLike(name);
-    }
-
-    PagingIterable<Team> getTeamsCountBetween(int min, int max) {
-        return repository.getTeamsCountBetween(min, max);
     }
 }

@@ -1,34 +1,41 @@
 package org.cassandra.utils;
 
-
+import lombok.Getter;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import com.datastax.oss.driver.api.core.CqlSession;
 
-import java.net.InetSocketAddress;
+import java.sql.SQLException;
 
 
 public class CassandraConnector {
 
-    private CqlSession session;
+    private final static String HOST = "127.0.0.1";
+    private final static int PORT = 9042;
+    private final static String keySpace = "ks";
 
-    public void connect(String node, int port) {
-        session = CqlSession.builder()
-                .addContactPoint(new InetSocketAddress(node, port))
+    private static CassandraConnector INSTANCE;
+    private static Cluster cluster;
+
+    @Getter
+    private static Session session;
+
+    private CassandraConnector() {
+        cluster = Cluster.builder().addContactPoint(HOST)
+                .withPort(PORT)
                 .build();
+        session = cluster.connect(keySpace);
     }
 
-    public void close() {
+    public static CassandraConnector getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CassandraConnector();
+        }
+        return INSTANCE;
+    }
+
+    public static void closeConnection() throws SQLException {
         session.close();
-    }
-
-    public void createKeyspace(String keyspaceName, String replicationStrategy, int replicationFactor) {
-        StringBuilder sb =
-                new StringBuilder("CREATE KEYSPACE IF NOT EXISTS ")
-                        .append(keyspaceName).append(" WITH replication = {")
-                        .append("'class':'").append(replicationStrategy)
-                        .append("','replication_factor':").append(replicationFactor)
-                        .append("};");
-
-        String query = sb.toString();
-        session.execute(query);
+        cluster.close();
     }
 }
