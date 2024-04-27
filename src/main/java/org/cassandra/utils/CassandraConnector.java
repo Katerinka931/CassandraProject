@@ -9,16 +9,15 @@ import java.sql.SQLException;
 
 
 public class CassandraConnector {
-
-    private final static String HOST = "127.0.0.1";
+    private final static String HOST = "localhost";
     private final static int PORT = 9042;
-    private final static String keySpace = "ks";
+    private final static String keySpace = "sport";
 
     private static CassandraConnector INSTANCE;
     private static Cluster cluster;
 
     @Getter
-    private static Session session;
+    private final Session session;
 
     private CassandraConnector() {
         cluster = Cluster.builder().addContactPoint(HOST)
@@ -34,7 +33,7 @@ public class CassandraConnector {
         return INSTANCE;
     }
 
-    public static void closeConnection() throws SQLException {
+    public void closeConnection() throws SQLException {
         session.close();
         cluster.close();
     }

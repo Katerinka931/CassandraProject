@@ -9,8 +9,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Team {
     private int id;
-
     private String name;
     private int count;
+
+    public Team(String name, int count) {
+        this.name = name;
+        this.count = count;
+    }
 }
 

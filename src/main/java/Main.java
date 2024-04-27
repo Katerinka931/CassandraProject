@@ -1,62 +1,79 @@
+import com.datastax.driver.core.exceptions.InvalidQueryException;
+import org.cassandra.entities.Team;
 import org.cassandra.service.CassandraService;
 import org.cassandra.utils.CassandraConnector;
 
+import java.sql.SQLException;
+import java.util.Scanner;
+
 public class Main {
+    private static void printMainMenu() {
+        System.out.println("Меню: ");
+        System.out.println("1 - Создать команду");
+        System.out.println("2 - Получить список всех команд");
+        System.out.println("3 - Получить команду по идентификатору");
+        System.out.println("4 - Удалить запись");
+        System.out.println("5 - Получить все узлы по метке");
+        System.out.println("6 - Получить список игроков команды");
+        System.out.println("7 - Добавить игрока в команду");
+        System.out.println("0 - Выход");
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         CassandraConnector connector = CassandraConnector.getInstance();
-        CassandraService service = new CassandraService(CassandraConnector.getSession());
+        CassandraService service = new CassandraService(connector.getSession());
 
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Вас приветствует консольный клиент для работы с базой данных Cassandra!");
+        printMainMenu();
+        int choice;
+
+        do {
+            choice = input.nextInt();
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Введите название команды: ");
+                    String name = input.next();
+
+                    System.out.println("Введите количество участников: ");
+                    try {
+                        int count = Integer.parseInt(input.next());
+                        service.createTeam(new Team(name, count));
+                        System.out.println("Создана команда с названием " + name);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Не удалось создать команду, количество участников должно быть числом");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Ошибка: " + e.getMessage());
+                    }
+                }
+                case 2 -> service.getAllTeams();
+                case 3 -> {
+                    System.out.println("Введите идентификатор команды: ");
+                    String id = input.next();
+
+                    try {
+                        service.getTeamById(id);
+                    } catch (InvalidQueryException e) {
+                        System.out.println("Неверно введен идентификатор");
+                    }
+                }
+                case 4 -> {
+                    System.out.println("Введите идентификатор команды: ");
+                    String id = input.next();
+
+                    try {
+                        service.deleteTeam(id);
+                    } catch (InvalidQueryException e) {
+                        System.out.println("Неверно введен идентификатор");
+                    }
+                }
+            }
+            printMainMenu();
+        } while (choice != 0);
+        connector.closeConnection();
     }
 }
-
-
-//        TeamDAO teamDAO = null;
-//        Team team = new Team(1, "JohnDoe", 31);
-//        teamDAO.insertUser(team);
-//        Team retrievedUser = teamDAO.getTeamById(1);
-
-//Neo4jConnector connector = Neo4jConnector.getInstance();
-//        Driver driver = connector.getDriver();
-//        Service service = new Service(driver);
-//        Scanner input = new Scanner(System.in);
-//
-//        System.out.println("Вас приветствует консольный клиент для работы с базой данных Redis!");
-//        printMainMenu();
-//        int choice;
-//
-//        do {
-//            choice = input.nextInt();
-//            switch (choice) {
-//                case 1 -> {
-//                    System.out.println("Введите название команды: ");
-//                    String name = input.next();
-//
-//                    System.out.println("Введите количество участников: ");
-//                    try {
-//                        int count = Integer.parseInt(input.next());
-//                        service.createTeam(new Team(name, count));
-//                        System.out.println("Создана команда с названием " + name);
-//                    } catch (NumberFormatException e) {
-//                        System.out.println("Не удалось создать команду, количество участников должно быть числом");
-//                    } catch (IllegalArgumentException e) {
-//                        System.out.println("Ошибка: " + e.getMessage());
-//                    }
-//                }
-//                case 2 -> {
-//                    System.out.println("Введите имя игрока: ");
-//                    String firstName = input.next();
-//
-//                    System.out.println("Введите фамилию игрока: ");
-//                    String lastName = input.next();
-//
-//                    try {
-//                        service.createPlayer(new Player(firstName, lastName));
-//                        System.out.println("Игрок создан");
-//                    } catch (Exception e) {
-//                        System.out.println("Ошибка: " + e.getMessage());
-//                    }
-//                }
 //                case 3 -> {
 //                    System.out.println("Введите идентификатор команды: ");
 //                    String id = input.next();
@@ -120,7 +137,7 @@ public class Main {
 //                }
 //            }
 //            printMainMenu();
-//        } while (choice != 0);
+//
 //
 //        connector.close();
 //        System.exit(0);
