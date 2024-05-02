@@ -25,6 +25,7 @@ public class CassandraConnector {
         session = cluster.connect();
         session.execute("CREATE KEYSPACE IF NOT EXISTS " + keySpace + " WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};");
         session.execute("USE " + keySpace);
+        session.execute("CREATE TABLE IF NOT EXISTS teams (id UUID PRIMARY KEY, name text, count int)");
     }
 
     public static CassandraConnector getInstance() {
