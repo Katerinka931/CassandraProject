@@ -3,14 +3,12 @@ package org.cassandra.utils;
 import lombok.Getter;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.datastax.oss.driver.api.core.CqlSession;
-
-import java.sql.SQLException;
 
 
 public class CassandraConnector {
     private final static String HOST = "localhost";
     private final static int PORT = 9042;
+    @Getter
     private final static String keySpace = "sport";
 
     private static CassandraConnector INSTANCE;
@@ -23,7 +21,10 @@ public class CassandraConnector {
         cluster = Cluster.builder().addContactPoint(HOST)
                 .withPort(PORT)
                 .build();
-        session = cluster.connect(keySpace);
+
+        session = cluster.connect();
+        session.execute("CREATE KEYSPACE IF NOT EXISTS " + keySpace + " WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};");
+        session.execute("USE " + keySpace);
     }
 
     public static CassandraConnector getInstance() {
@@ -33,7 +34,7 @@ public class CassandraConnector {
         return INSTANCE;
     }
 
-    public void closeConnection() throws SQLException {
+    public void closeConnection() {
         session.close();
         cluster.close();
     }

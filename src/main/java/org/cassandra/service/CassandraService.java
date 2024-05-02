@@ -21,16 +21,22 @@ public class CassandraService {
         ResultSet resultSet = repository.getAllTeams();
         PrintUtil.printTeam(resultSet);
     }
+
     public void getTeamById(String id) {
         ResultSet resultSet = repository.getTeamById(id);
         PrintUtil.printTeam(resultSet);
     }
 
-    public void updateTeam(Team team) {
-        repository.updateTeam(team);
+    public void updateTeam(String id, Team team) {
+        repository.updateTeam(id, team);
     }
 
     public void deleteTeam(String id) {
         repository.deleteTeam(id);
+    }
+
+    public void selectTeamsByCount(int min, int max) {
+        ResultSet resultSet = repository.selectTeamsByCount(min, max);
+        PrintUtil.printTeam(resultSet);
     }
 }

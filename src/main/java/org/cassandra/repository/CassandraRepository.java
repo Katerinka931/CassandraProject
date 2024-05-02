@@ -4,6 +4,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import org.cassandra.entities.Team;
+import org.cassandra.utils.CassandraConnector;
 
 import java.util.UUID;
 
@@ -33,12 +34,16 @@ public class CassandraRepository {
         return session.execute(String.format("SELECT * FROM teams WHERE id=%s", id));
     }
 
-    public void updateTeam(Team team) {
-        session.execute("");
+    public void updateTeam(String id, Team team) {
+        PreparedStatement preparedStatement = session.prepare("UPDATE teams SET name = ?, count = ? WHERE id = ?");
+        session.execute(preparedStatement.bind(team.getName(), team.getCount(), UUID.fromString(id)));
     }
 
     public void deleteTeam(String id) {
-        session.execute("");
+        session.execute(String.format("DELETE FROM %s.teams WHERE id = %s;", CassandraConnector.getKeySpace(), id));
     }
-//    todo 2 запроса
+
+    public ResultSet selectTeamsByCount(int min, int max) {
+        return session.execute(String.format("SELECT * FROM %s.teams WHERE count >= %d AND count <= %d ALLOW FILTERING;", CassandraConnector.getKeySpace(), min, max));
+    }
 }
